@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="pt-BR" data-theme="dracula">
+<head>
+
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@5/themes.css" rel="stylesheet" type="text/css" />
+
+    <title>SpringMarket - Lista de Compras</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+    <div class="navbar bg-base-200 shadow-sm mb-4">
+        <a class="btn btn-ghost text-xl">🛒 SpringMarket</a>
+        <div class="flex-1">
+            <ul class="menu menu-horizontal px-1">
+                <li>
+                    <details>
+                        <summary>Lang</summary>
+                        <ul class="bg-base-100 rounded-t-none p-2">
+                            <li><a href="?lang=pt_BR">Português</a></li>
+                            <li><a href="?lang=en_US">English</a></li>
+                            <li><a href="?lang=fr">Français</a></li>
+                        </ul>
+                    </details>
+                </li>
+            </ul>
+        </div>
+        <div class="flex-none">
+            <a href="/logout" class="btn btn-ghost btn-sm">Logout</a>
+        </div>
+    </div>
+
+    <div class="container mx-auto p-6">
+        <h1 class="text-4xl font-bold text-center mb-8 text-primary">🛒 Lista de Compras</h1>
+
+        <div class="card bg-base-200 shadow-xl mb-8">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-4">
+                    <span class="text-secondary">📝</span> Adicionar Item
+                </h2>
+                <form th:action="@{/lista/salvar}" th:object="${item}" method="post" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <input type="hidden" th:field="*{id}" />
+                    
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Nome do Item</span>
+                        </label>
+                        <input type="text" th:field="*{nome}" required class="input input-bordered input-primary" placeholder="Ex: Leite" />
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Quantidade</span>
+                        </label>
+                        <input type="number" th:field="*{quantidade}" min="1" required class="input input-bordered input-secondary" placeholder="1" />
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="label">
+                            <span class="label-text font-semibold">Preço (R$)</span>
+                        </label>
+                        <input type="number" th:field="*{preco}" step="0.01" min="0" required class="input input-bordered input-accent" placeholder="0.00" />
+                    </div>
+                    
+                    <div class="form-control">
+                        <label class="label cursor-pointer">
+                            <span class="label-text font-semibold">Já comprou?</span>
+                            <input type="checkbox" th:field="*{comprado}" class="checkbox checkbox-success" />
+                        </label>
+                        <button type="submit" class="btn btn-primary btn-block mt-2">
+                            <span class="text-lg">💾</span> Salvar Item
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card bg-base-100 shadow-xl">
+            <div class="card-body">
+                <h2 class="card-title text-2xl mb-6">
+                    <span class="text-info">📋</span> Seus Itens de Compra
+                </h2>
+                <div class="overflow-x-auto">
+                    <table class="table table-zebra w-full">
+                        <thead>
+                            <tr class="bg-primary text-primary-content">
+                                <th class="text-center">🏷️ Nome</th>
+                                <th class="text-center">📦 Quantidade</th>
+                                <th class="text-center">💰 Preço</th>
+                                <th class="text-center">✅ Status</th>
+                                <th class="text-center">⚙️ Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:each="item : ${itens}" th:class="${item.comprado ? 'bg-success bg-opacity-20' : ''}">
+                                <td class="font-semibold" th:text="${item.nome}"></td>
+                                <td class="text-center">
+                                    <div class="badge badge-secondary badge-outline" th:text="${item.quantidade}"></div>
+                                </td>
+                                <td class="text-center font-mono">
+                                    <span class="text-accent font-bold">R$ </span>
+                                    <span th:text="${item.preco}"></span>
+                                </td>
+                                <td class="text-center">
+                                    <div th:if="${item.comprado}" class="badge badge-success gap-2">
+                                        ✅ Comprado
+                                    </div>
+                                    <div th:unless="${item.comprado}" class="badge badge-warning gap-2">
+                                        ⏳ Pendente
+                                    </div>
+                                </td>
+                                <td class="text-center">
+                                    <div class="join">
+                                        <a th:href="@{'/lista/editar/' + ${item.id}}" class="btn btn-sm btn-info join-item tooltip" data-tip="Editar item">
+                                            ✏️
+                                        </a>
+                                        <a th:href="@{'/lista/excluir/' + ${item.id}}" 
+                                           onclick="return confirm('Tem certeza que deseja excluir este item?')" 
+                                           class="btn btn-sm btn-error join-item tooltip" 
+                                           data-tip="Excluir item">
+                                            🗑️
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Estatísticas -->
+                <div class="stats shadow mt-6 w-full">
+                    <div class="stat">
+                        <div class="stat-figure text-primary">
+                            📊
+                        </div>
+                        <div class="stat-title">Total de Itens</div>
+                        <div class="stat-value text-primary" th:text="${#lists.size(itens)}">0</div>
+                        <div class="stat-desc">Itens na sua lista</div>
+                    </div>
+                    
+                    <div class="stat">
+                        <div class="stat-figure text-success">
+                            ✅
+                        </div>
+                        <div class="stat-title">Status</div>
+                        <div class="stat-value text-success">OK</div>
+                        <div class="stat-desc">Sistema funcionando</div>
+                    </div>
+                    
+                    <div class="stat">
+                        <div class="stat-figure text-info">
+                            🛒
+                        </div>
+                        <div class="stat-title">Lista Ativa</div>
+                        <div class="stat-value text-info">✓</div>
+                        <div class="stat-desc">Pronta para uso</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,14 @@
+com\example\listacompras\service\ItemServiceImpl.class
+com\example\listacompras\controller\ItemController.class
+com\example\listacompras\service\UserService.class
+com\example\listacompras\model\User.class
+com\example\listacompras\controller\HomeController.class
+com\example\listacompras\EpicTaskApplication.class
+com\example\listacompras\model\Item.class
+com\example\listacompras\controller\ItemWebController.class
+com\example\listacompras\service\ItemService.class
+com\example\listacompras\repository\UserRepository.class
+com\example\listacompras\repository\ItemRepository.class
+com\example\listacompras\config\I18nConfig.class
+com\example\listacompras\config\SecurityConfig.class
+com\example\listacompras\controller\AuthController.class
